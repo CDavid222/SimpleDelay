@@ -32,12 +32,15 @@ private:
 
     juce::Slider delayTimeSlider;
     juce::Slider feedbackSlider;
+    juce::Slider drywetSlider;
 
     juce::Label delayTimeLabel;
     juce::Label feedbackLabel;
+    juce::Label drywetLabel;
 
     std::unique_ptr <juce::AudioProcessorValueTreeState::SliderAttachment> delayTimeValue;
     std::unique_ptr <juce::AudioProcessorValueTreeState::SliderAttachment> feedbackValue;
+    std::unique_ptr <juce::AudioProcessorValueTreeState::SliderAttachment> drywetValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleDelayAudioProcessorEditor)
 };

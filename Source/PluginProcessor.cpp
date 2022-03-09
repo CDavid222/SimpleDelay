@@ -21,11 +21,14 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
                      #endif
                        ), treeState(*this, nullptr, juce::Identifier("PARAMETERS"),
                            { std::make_unique<juce::AudioParameterFloat>("delayTime", "Delay (samples)", 0.f, 5000.f, 1000.f),
-                             std::make_unique<juce::AudioParameterFloat>("feedback", "Feedback 0-1", 0.f, 0.99f, 0.3f) })
+                             std::make_unique<juce::AudioParameterFloat>("feedback", "Feedback 0-1", 0.f, 0.99f, 0.3f),
+                           std::make_unique<juce::AudioParameterFloat>("drywet", "DryWet 0-1", 0.f, 1.0f, 0.3f) })
+
 #endif
 {
     treeState.addParameterListener("delayTime", this);
     treeState.addParameterListener("feedback", this);
+    treeState.addParameterListener("drywet", this);
 }
 
 SimpleDelayAudioProcessor::~SimpleDelayAudioProcessor()
@@ -163,7 +166,14 @@ void SimpleDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         auto* channelData = buffer.getWritePointer (channel);
 
-        // ..do something to the data...
+        for (int i = 0; i < buffer.getNumSamples(); i++)
+        {
+            float in = channelData[i];
+            float temp = mDelayLine.popSample(channel, mDelayTime);
+            mDelayLine.pushSample(channel, in + (temp * mFeedback));
+            channelData[i] = ((in * (1.0f - mDryWet)) + (temp * mDryWet)) * 0.5F;
+            temp = temp * mDryWet;
+        }
     }
 }
 
@@ -211,5 +221,10 @@ void SimpleDelayAudioProcessor::parameterChanged(const juce::String& parameterID
     else if (parameterID == "feedback")
     {
         mFeedback = newValue;
+    }
+
+    else if (parameterID == "drywet")
+    {
+        mDryWet = newValue;
     }
 }

@@ -15,7 +15,7 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize(400, 280);
+    setSize(550, 280);
 
     // Delay time
     delayTimeValue = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(treeState, "delayTime", delayTimeSlider);
@@ -38,6 +38,17 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     addAndMakeVisible(feedbackLabel);
     feedbackLabel.setText("Feedback", juce::dontSendNotification);
     feedbackLabel.attachToComponent(&feedbackSlider, false);
+
+    // Dry/Wet
+    drywetValue = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(treeState, "drywet", drywetSlider);
+    drywetSlider.setSliderStyle(juce::Slider::LinearVertical);
+    drywetSlider.setRange(0.0f, 1.0f, 0.01f);
+    drywetSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 75, 25);
+    addAndMakeVisible(&drywetSlider);
+
+    addAndMakeVisible(drywetLabel);
+    drywetLabel.setText("DryWet", juce::dontSendNotification);
+    drywetLabel.attachToComponent(&drywetSlider, false);
 }
 
 SimpleDelayAudioProcessorEditor::~SimpleDelayAudioProcessorEditor()
@@ -58,4 +69,5 @@ void SimpleDelayAudioProcessorEditor::resized()
 {
     delayTimeSlider.setBounds(50, 110, 320, 50);
     feedbackSlider.setBounds(50, 180, 320, 50);
+    drywetSlider.setBounds(400, 110, 50, 120);
 }
