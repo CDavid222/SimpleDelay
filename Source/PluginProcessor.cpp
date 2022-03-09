@@ -202,5 +202,14 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 // Function called when parameter is changed
 void SimpleDelayAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
+    if (parameterID == "delayTime")
+    {
+        mDelayTime = newValue;
+        mDelayLine.setDelay(newValue);
+    }
 
+    else if (parameterID == "feedback")
+    {
+        mFeedback = newValue;
+    }
 }
