@@ -97,6 +97,13 @@ void SimpleDelayAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void SimpleDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
+
+    mDelayLine.reset();
+    mDelayLine.prepare(spec);
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 }
