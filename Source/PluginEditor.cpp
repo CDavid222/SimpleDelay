@@ -28,6 +28,18 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     delayTimeLabel.setText("Delay time (samples)", juce::dontSendNotification);
     delayTimeLabel.attachToComponent(&delayTimeSlider, false);
 
+    // Delay Time 2
+
+    delayTime2Value = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(treeState, "delayTime2", delayTime2Slider);
+    delayTime2Slider.setSliderStyle(juce::Slider::LinearHorizontal);
+    delayTime2Slider.setRange(0.0f, 5000.0f, 1.0f);
+    delayTime2Slider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxRight, true, 75, 25);
+    addAndMakeVisible(&delayTime2Slider);
+
+    addAndMakeVisible(delayTimeLabel);
+    delayTime2Label.setText("Delay time 2(samples)", juce::dontSendNotification);
+    delayTime2Label.attachToComponent(&delayTime2Slider, false);
+
     // Feedback
     feedbackValue = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(treeState, "feedback", feedbackSlider);
     feedbackSlider.setSliderStyle(juce::Slider::LinearHorizontal);
@@ -67,7 +79,8 @@ void SimpleDelayAudioProcessorEditor::paint (juce::Graphics& g)
 
 void SimpleDelayAudioProcessorEditor::resized()
 {
-    delayTimeSlider.setBounds(50, 110, 320, 50);
-    feedbackSlider.setBounds(50, 180, 320, 50);
+    delayTimeSlider.setBounds(50, 110, 320, 20);
+    delayTime2Slider.setBounds(50, 145, 320, 20);
+    feedbackSlider.setBounds(50, 180, 320, 40);
     drywetSlider.setBounds(400, 110, 50, 120);
 }

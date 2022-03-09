@@ -21,12 +21,14 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
                      #endif
                        ), treeState(*this, nullptr, juce::Identifier("PARAMETERS"),
                            { std::make_unique<juce::AudioParameterFloat>("delayTime", "Delay (samples)", 0.f, 5000.f, 1000.f),
+                           std::make_unique<juce::AudioParameterFloat>("delayTime2", "Delay 2(samples)", 0.f, 5000.f, 1000.f),
                              std::make_unique<juce::AudioParameterFloat>("feedback", "Feedback 0-1", 0.f, 0.99f, 0.3f),
                            std::make_unique<juce::AudioParameterFloat>("drywet", "DryWet 0-1", 0.f, 1.0f, 0.3f) })
 
 #endif
 {
     treeState.addParameterListener("delayTime", this);
+    treeState.addParameterListener("delayTime2", this);
     treeState.addParameterListener("feedback", this);
     treeState.addParameterListener("drywet", this);
 }
@@ -164,7 +166,7 @@ void SimpleDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // interleaved by keeping the same state.
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto* channelData = buffer.getWritePointer(channel);
 
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
@@ -172,7 +174,6 @@ void SimpleDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             float temp = mDelayLine.popSample(channel, mDelayTime);
             mDelayLine.pushSample(channel, in + (temp * mFeedback));
             channelData[i] = ((in * (1.0f - mDryWet)) + (temp * mDryWet)) * 0.5F;
-            temp = temp * mDryWet;
         }
     }
 }
@@ -216,6 +217,13 @@ void SimpleDelayAudioProcessor::parameterChanged(const juce::String& parameterID
     {
         mDelayTime = newValue;
         mDelayLine.setDelay(newValue);
+    }
+
+    else if (parameterID == "delayTime2")
+    {
+        mDelayTime2 = newValue;
+            mDelayLine.setDelay(newValue);
+
     }
 
     else if (parameterID == "feedback")
